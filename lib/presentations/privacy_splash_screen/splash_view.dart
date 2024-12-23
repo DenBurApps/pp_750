@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigate();
   }
 
-  void _navigate() {
+  void _navigate() { //TODO uncomment PrivacyRoute (down)
     // final seenRateDialog = _databaseService.get(DatabaseKeys.seenRateDialog) ?? false;
     // if (!seenRateDialog) {
     //   InAppReview.instance.requestReview();
