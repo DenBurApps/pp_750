@@ -1,10 +1,11 @@
 import 'dart:async';
-
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pp_750/core/app_export.dart';
-
+import 'package:in_app_review/in_app_review.dart';
+import 'package:pp_750/core/services/remote_config.dart';
+import 'package:pp_750/routes/app_router.dart';
 import '../../core/services/database/database_keys.dart';
 import '../../core/services/database/database_service.dart';
 
@@ -21,7 +22,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  //final _remoteConfigService = GetIt.instance<RemoteConfigService>();
+  final _remoteConfigService = GetIt.instance<FlagSmithService>();
   final _databaseService = GetIt.instance<DatabaseService>();
 
   bool usePrivacy = true;
@@ -35,32 +36,31 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _init() async {
-    // usePrivacy = _remoteConfigService.getBool(ConfigKey.usePrivacy);
+    usePrivacy = _remoteConfigService.usePrivacy;
 
     _navigate();
   }
 
-  void _navigate() { //TODO uncomment PrivacyRoute (down)
-    // final seenRateDialog = _databaseService.get(DatabaseKeys.seenRateDialog) ?? false;
-    // if (!seenRateDialog) {
-    //   InAppReview.instance.requestReview();
-    //   _databaseService.put(DatabaseKeys.seenRateDialog, true);
-    // }
-    if (usePrivacy) {
-     // _databaseService.put(DatabaseKeys.seenOnboarding, false);
+  void _navigate() {
+    final seenRateDialog =
+        _databaseService.get(DatabaseKeys.seenRateDialog) ?? false;
+    if (!seenRateDialog) {
+      InAppReview.instance.requestReview();
+      _databaseService.put(DatabaseKeys.seenRateDialog, true);
+    }
+    if (!usePrivacy) {
+      _databaseService.put(DatabaseKeys.seenOnboarding, false);
       final seenOnboarding =
           _databaseService.get(DatabaseKeys.seenOnboarding) ?? false;
 
-
       if (!seenOnboarding) {
-        context.pushRoute(OnboardingRoute());
+        context.replaceRoute(OnboardingRoute());
       } else {
-        context.pushRoute(HomeRoute());
+        context.replaceRoute(HomeRoute());
       }
+    } else {
+      context.replaceRoute(PrivacyRoute());
     }
-    // } else {
-    //   context.pushRoute(PrivacyRoute())  ;
-    // }
 
     FlutterNativeSplash.remove();
   }

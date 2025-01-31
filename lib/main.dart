@@ -1,5 +1,4 @@
 // ignore_for_file: unused_import
-
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -9,9 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-
 import 'core/app_export.dart';
 import 'core/services/service_locator.dart';
 //import 'firebase_options.dart';
@@ -30,20 +26,6 @@ Future<void> main() async {
 }
 
 Future<void> _initApp() async {
-  // try {
-  //   await Firebase.initializeApp(
-  //     // options: DefaultFirebaseOptions.currentPlatform,
-  //   );
-  //   FlutterError.onError = (errorDetails) {
-  //     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  //   };
-  //   PlatformDispatcher.instance.onError = (error, stack) {
-  //     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //     return true;
-  //   };
-  // } on Exception catch (e) {
-  //   log("Failed to initialize Firebase: $e");
-  // }
   await PrefUtils().init();
   await ServiceLocator.setup();
 }
@@ -64,21 +46,18 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             ),
-
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
               return MaterialApp.router(
                 builder: (context, child) => MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: child ?? Container()),
+                  data: MediaQuery.of(context)
+                      .copyWith(alwaysUse24HourFormat: true),
+                  child: child ?? Container(),
+                ),
                 theme: theme,
-                title: 'Name',
-                //TODO: Name
-
+                title: 'Sleep Energy Path',
                 debugShowCheckedModeBanner: false,
-
                 routerConfig: _appRouter.config(),
               );
             },

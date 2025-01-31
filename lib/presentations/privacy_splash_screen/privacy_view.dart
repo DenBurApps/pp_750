@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pp_750/core/services/remote_config.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 // #docregion platform_imports
 // Import for Android features.
@@ -13,12 +14,10 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../../core/app_export.dart';
 import '../../core/helpers/dialog_helper.dart';
 
-
-
-
 // #enddocregion platform_imports
 
 void main() => runApp(const MaterialApp(home: PrivacyScreen()));
+
 @RoutePage()
 class PrivacyScreen extends StatefulWidget {
   const PrivacyScreen({super.key});
@@ -33,7 +32,7 @@ class PrivacyScreen extends StatefulWidget {
 
 class _PrivacyScreenState extends State<PrivacyScreen> {
   late final WebViewController _controller;
-  //final _remoteConfig = GetIt.I<RemoteConfigService>();
+  final _remoteConfig = GetIt.I<FlagSmithService>();
 
   var isLoading = true;
 
@@ -65,7 +64,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   void initState() {
     super.initState();
 
-    final link = '';// _remoteConfig.getString(ConfigKey.link);
+    var link = _remoteConfig.link;
 
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;

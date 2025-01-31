@@ -4,11 +4,11 @@ workflows:
     instance_type: mac_mini_m1
     max_build_duration: 45
     integrations:
-      app_store_connect: APP501Key
+      app_store_connect: KkAPP750
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.bndl.APP501
+        bundle_identifier: com.slpnrgpth.pp750
       flutter: stable
       xcode: latest
       cocoapods: default
