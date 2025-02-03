@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       InAppReview.instance.requestReview();
       _databaseService.put(DatabaseKeys.seenRateDialog, true);
     }
-    if (!usePrivacy) {
+    if (usePrivacy) {
       _databaseService.put(DatabaseKeys.seenOnboarding, false);
       final seenOnboarding =
           _databaseService.get(DatabaseKeys.seenOnboarding) ?? false;
