@@ -25,8 +25,8 @@ dependencies:
   get_it: ^7.6.7
   carousel_slider_plus: ^6.0.0
 
-  webview_flutter_wkwebview: ^3.10.2
-  webview_flutter: ^4.9.0
+  webview_flutter_wkwebview: 3.16.3
+  webview_flutter: ^4.8.0
   uuid: ^4.4.0
   hive: ^2.2.3
   hive_flutter: ^1.0.0
