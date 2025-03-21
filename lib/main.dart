@@ -10,7 +10,6 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/app_export.dart';
 import 'core/services/service_locator.dart';
-//import 'firebase_options.dart';
 
 Future<void> main() async {
   final bindigs = WidgetsFlutterBinding.ensureInitialized();

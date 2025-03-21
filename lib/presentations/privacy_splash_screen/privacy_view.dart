@@ -114,7 +114,7 @@ class _Loading extends StatelessWidget {
           ),
           const SizedBox(height: 25),
           const CupertinoActivityIndicator(
-            color: CupertinoColors.black,
+            color: CupertinoColors.white,
             radius: 16,
           )
         ],
