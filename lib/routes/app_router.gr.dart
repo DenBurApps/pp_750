@@ -57,7 +57,7 @@ abstract class _$AppRouter extends RootStackRouter {
     PrivacyRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const PrivacyScreen(),
+        child: const GeneralScreen(),
       );
     },
     SettingsRoute.name: (routeData) {
@@ -201,7 +201,7 @@ class OnboardingRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [PrivacyScreen]
+/// [GeneralScreen]
 class PrivacyRoute extends PageRouteInfo<void> {
   const PrivacyRoute({List<PageRouteInfo>? children})
       : super(

@@ -28,11 +28,26 @@ workflows:
         script: |
           find . -name "Podfile" -execdir pod install \;
         ignore_failure: true
-      - name: Flutter build ipa and automatic versioning
+      - name: Inject random strings into Dart
+        script: |
+          echo "const String BUILD_ID = \"$(uuidgen)\";" > lib/random_build.dart
+          # Добавить импорт random_build.dart в начало файла main.dart только если его нет
+          if ! grep -q 'import "random_build.dart";' lib/main.dart; then
+            sed -i '' '1s/^/import "random_build.dart";\n/' lib/main.dart
+          fi
+          echo "void dummy() { print(BUILD_ID); }" >> lib/main.dart
+      - name: Enable Xcode binary obfuscation
+        script: |
+          export OTHER_SWIFT_FLAGS="-no-serialize-debugging-options -Xllvm -x86-speculative-load-hardening"
+          export OTHER_LDFLAGS="-s -dead_strip -ObjC"
+          export GCC_GENERATE_DEBUGGING_SYMBOLS=NO
+      - name: Flutter build ipa with enhanced obfuscation
         script: |
           flutter build ipa --release \
             --export-options-plist=/Users/builder/export_options.plist \
-            --obfuscate --split-debug-info=build/app/outputs/symbols
+            --obfuscate --split-debug-info=build/app/outputs/symbols \
+            --no-tree-shake-icons \
+            --dart-define=RANDOM_BUILD=$(uuidgen)
     artifacts:
       - build/ios/ipa/*.ipa
       - build/app/outputs/symbols/*.symbols
@@ -42,8 +57,10 @@ workflows:
       email:
         recipients:
           - denwhite223@gmail.com
+          - vervicowork@gmail.com
+          - kameneckiy228@gmail.com
         notify:
           success: true
           failure: true
       app_store_connect:
-        auth: integration 
+        auth: integration

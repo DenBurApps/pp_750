@@ -1,72 +1,33 @@
-import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:pp_750/core/services/remote_config.dart';
+import 'package:pp_750/core/services/main_mixin.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-// #docregion platform_imports
-// Import for Android features.
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-// Import for iOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../../core/app_export.dart';
-import '../../core/helpers/dialog_helper.dart';
 
-// #enddocregion platform_imports
-
-void main() => runApp(const MaterialApp(home: PrivacyScreen()));
 
 @RoutePage()
-class PrivacyScreen extends StatefulWidget {
-  const PrivacyScreen({super.key});
+class GeneralScreen extends StatefulWidget {
+  const GeneralScreen({super.key});
 
   @override
-  State<PrivacyScreen> createState() => _PrivacyScreenState();
-  
+  State<GeneralScreen> createState() => _GeneralScreenState();
+
   static Widget builder(BuildContext context) {
-    return PrivacyScreen();
+    return GeneralScreen();
   }
 }
 
-class _PrivacyScreenState extends State<PrivacyScreen> {
+class _GeneralScreenState extends State<GeneralScreen> with MainMixin {
+
   late final WebViewController _controller;
-  final _remoteConfig = GetIt.I<FlagSmithService>();
 
-  var isLoading = true;
-
-  String get _cssCode {
-    if (Platform.isAndroid) {
-      return """
-        .docs-ml-promotion { 
-          display: none !important; 
-        } 
-        #docs-ml-header-id {
-          display: none !important;
-        }
-        .app-container { 
-          margin: 0 !important; 
-        }
-      """;
-    }
-    return ".docs-ml-promotion, #docs-ml-header-id { display: none !important; } .app-container { margin: 0 !important; }";
-  }
-
-  String get _jsCode => """
-      var style = document.createElement('style');
-      style.type = "text/css";
-      style.innerHTML = "$_cssCode";
-      document.head.appendChild(style);
-    """;
+  bool _isAppInfoLoading = true;
 
   @override
   void initState() {
     super.initState();
 
-    var link = _remoteConfig.link;
-
-    // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
@@ -79,75 +40,95 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
 
     final WebViewController controller =
         WebViewController.fromPlatformCreationParams(params);
-    // #enddocregion platform_features
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            log('WebView is loading (progress : $progress%)');
-          },
-          onPageStarted: (String url) {
-            log('Page started loading: $url');
-          },
+          onProgress: (int progress) {},
+          onPageStarted: (String url) {},
           onPageFinished: (String url) {
-            controller.runJavaScript(_jsCode);
-            log('Page finished loading: $url');
-            setState(() => isLoading = false);
+            setState(() => _isAppInfoLoading = false);
           },
           onWebResourceError: (WebResourceError error) {
-            log('''
-              Page resource error:
-                code: ${error.errorCode}
-                description: ${error.description}
-                errorType: ${error.errorType}
-                isForMainFrame: ${error.isForMainFrame}
-          ''');
-            if (error.errorCode == -1009) {
-              DialogHelper.showNoInternetDialog(context);
-            }
+            if (error.errorCode == -1009) {}
           },
           onNavigationRequest: (NavigationRequest request) {
-            log('allowing navigation to ${request.url}');
             return NavigationDecision.navigate;
           },
           onUrlChange: (UrlChange change) {
-            log('url change to ${change.url}');
+            if (change.url != null) {
+              saveLastVisit(change.url!);
+            }
           },
         ),
-      )
-      ..loadRequest(Uri.parse(link));
+      );
 
-    // #docregion platform_features
-    if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-    } else if (controller.platform is WebKitWebViewController) {
+    if (controller.platform is WebKitWebViewController) {
       (controller.platform as WebKitWebViewController)
           .setAllowsBackForwardNavigationGestures(true);
     }
-    // #enddocregion platform_features
 
     _controller = controller;
+
+    final urlToLoad = loadUrl();
+
+    _controller.loadRequest(Uri.parse(urlToLoad));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: isLoading
-            ? Center(
-                child: CupertinoActivityIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                  radius: 20,
-                ),
-              )
-            : WebViewWidget(controller: _controller),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: _isAppInfoLoading
+          ? const _Loading()
+          : SafeArea(
+              child: _AppInfoLoadedState(
+                controller: _controller,
+              ),
+            ),
+    );
+  }
+}
+
+class _Loading extends StatelessWidget {
+  const _Loading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF0F1023),
+      width: double.infinity,
+      height: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Image.asset(
+              'assets/images/icon.png',
+              width: 120,
+              height: 120,
+            ),
+          ),
+          const SizedBox(height: 25),
+          const CupertinoActivityIndicator(
+            color: CupertinoColors.black,
+            radius: 16,
+          )
+        ],
       ),
     );
+  }
+}
+
+class _AppInfoLoadedState extends StatelessWidget {
+  final WebViewController controller;
+  const _AppInfoLoadedState({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return WebViewWidget(controller: controller);
   }
 }

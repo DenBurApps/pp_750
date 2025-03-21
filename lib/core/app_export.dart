@@ -1,4 +1,3 @@
-export 'package:connectivity_plus/connectivity_plus.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:pp_750/core/utils/navigator_service.dart';
 export 'package:pp_750/core/utils/pref_utils.dart';
