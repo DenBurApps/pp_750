@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:pp_750/core/services/database/database_service.dart';
-import 'package:pp_750/data/models/models/models.dart';
-import 'package:pp_750/widgets/custom_elevated_button.dart';
 import 'package:pp_750/widgets/support_pop_up.dart';
 
 import '../../core/app_export.dart';
@@ -63,8 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 Text(
                   'Settings',
-                  style: CustomTextStyles.displaySmall.copyWith(
-                  ),
+                  style: CustomTextStyles.displaySmall.copyWith(),
                 ),
                 SizedBox(
                   width: 40.h,
@@ -78,12 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-
                 Container(
-                  // decoration: AppDecoration.outline.copyWith(
-                  //   //color: theme.colorScheme.primary.withOpacity(0.5),
-                  //   borderRadius: BorderRadius.circular(16.h),
-                  // ),
                   padding:
                       EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.h),
                   child: GridView(
@@ -94,22 +86,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisSpacing: 8.h,
                       mainAxisSpacing: 8.h,
                     ),
-                  //  crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-
-                      _buildButton(context,
-                          text: 'Version',
-                          onTap: () {
+                      _buildButton(context, text: 'Version', onTap: () {
                         DialogHelper.showAppVersionDialog(context);
                       },
                           decoration: AppDecoration.surface,
                           backColor: theme.colorScheme.surface,
                           textColor: theme.colorScheme.onSecondary),
-                      // Divider(
-                      //   color: theme.colorScheme.onPrimary.withOpacity(0.4),
-                      //   thickness: 1.h,
-                      //   height: 4.h,
-                      // ),
                       _buildButton(
                         context,
                         text: 'Rate us',
@@ -123,13 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         backColor: theme.colorScheme.surface,
                         textColor: theme.colorScheme.onSecondary,
                       ),
-                      // Divider(
-                      //   color: theme.colorScheme.onPrimary.withOpacity(0.4),
-                      //   thickness: 1.h,
-                      //   height: 4.h,
-                      // ),
-                      _buildButton(context,
-                          text: 'Contact Us', onTap: () {
+                      _buildButton(context, text: 'Contact Us', onTap: () {
                         showCupertinoModalPopup(
                           context: context,
                           builder: (context) => const SupportPopUp(
@@ -141,11 +118,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: AppDecoration.surface,
                           backColor: theme.colorScheme.surface,
                           textColor: theme.colorScheme.onSecondary),
-                      // Divider(
-                      //   color: theme.colorScheme.onPrimary.withOpacity(0.4),
-                      //   thickness: 1.h,
-                      //   height: 4.h,
-                      // ),
                       _buildButton(
                         context,
                         text: 'Privacy Policy',
@@ -158,11 +130,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         backColor: theme.colorScheme.surface,
                         textColor: theme.colorScheme.onSecondary,
                       ),
-                      // Divider(
-                      //   color: theme.colorScheme.onPrimary.withOpacity(0.4),
-                      //   thickness: 1.h,
-                      //   height: 4.h,
-                      // ),
                       _buildButton(
                         context,
                         text: 'Terms of Use',
@@ -184,7 +151,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(
                   height: 16.h,
                 ),
-
               ],
             ),
           ),
@@ -211,10 +177,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onTap?.call();
         },
         child: Container(
-          // decoration: AppDecoration.outlineGray.copyWith(
-          //   // color: backColor,
-          //   borderRadius: BorderRadiusStyle.roundedBorder16,
-          // ),
           padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 0.h),
           // margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 50.h),
           child: Column(
@@ -242,6 +204,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-
-
 }

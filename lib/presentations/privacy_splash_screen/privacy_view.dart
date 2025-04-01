@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pp_750/core/services/main_mixin.dart';
+import 'package:pp_750/core/mixin/feature_mixin.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
@@ -18,7 +18,7 @@ class GeneralScreen extends StatefulWidget {
   }
 }
 
-class _GeneralScreenState extends State<GeneralScreen> with MainMixin {
+class _GeneralScreenState extends State<GeneralScreen> with FeatureMixin {
 
   late final WebViewController _controller;
 

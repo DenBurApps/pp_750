@@ -22,7 +22,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _remoteConfigService = GetIt.instance<FlagSmithService>();
+  final _remoteConfigService = GetIt.instance<FeatureData>();
   final _databaseService = GetIt.instance<DatabaseService>();
 
   bool usePrivacy = true;
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _init() async {
-    usePrivacy = _remoteConfigService.usePrivacy;
+    usePrivacy = _remoteConfigService.featureDisabled;
 
     _navigate();
   }

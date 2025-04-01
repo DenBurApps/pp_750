@@ -7,7 +7,7 @@ class ServiceLocator {
   static Future<void> setup() async {
     GetIt.I.registerSingletonAsync(() => DatabaseService().init());
     await GetIt.I.isReady<DatabaseService>();
-    GetIt.I.registerSingletonAsync(() => FlagSmithService().init());
-    await GetIt.I.isReady<FlagSmithService>();
+    GetIt.I.registerSingletonAsync(() => FeatureData.I.init());
+    await GetIt.I.isReady<FeatureData>();
   }
 }

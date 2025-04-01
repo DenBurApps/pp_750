@@ -1,52 +1,51 @@
 import 'dart:convert';
+
 import 'package:flagsmith/flagsmith.dart';
 
-class FlagSmithService {
+class FeatureData {
+  static final FeatureData I = FeatureData._();
+  FeatureData._();
   static const _apikey = 'YfURMpgrBp6ugtPZMxskEw';
 
   late FlagsmithClient _flagsmithClient;
 
-  late String _link;
-  late bool _usePrivacy;
-  late final String _privacyLink;
-  late final String _termsLink;
+  late String _featureData;
+  late bool _featureDisabled;
 
-  Future<FlagSmithService> init() async {
-    _flagsmithClient = await FlagsmithClient.init(
-      apiKey: _apikey,
-      config: const FlagsmithConfig(
-        caches: true,
-      ),
-    );
-    await _flagsmithClient.getFeatureFlags(reload: true);
+  Future<FeatureData> init() async {
+    try {
+      _flagsmithClient = await FlagsmithClient.init(
+        apiKey: _apikey,
+        config: const FlagsmithConfig(
+          caches: true,
+        ),
+      );
+      await _flagsmithClient.getFeatureFlags(reload: true);
 
-    final config = jsonDecode(
-        await _flagsmithClient.getFeatureFlagValue(ConfigKey.config.name) ??
-            '') as Map<String, dynamic>;
+      final config = jsonDecode(
+          await _flagsmithClient.getFeatureFlagValue(ConfigKey.feature.name) ??
+              '') as Map<String, dynamic>;
 
-    _link = config[ConfigKey.link.name];
-    _usePrivacy = config[ConfigKey.usePrivacy.name];
-    _privacyLink = config[ConfigKey.privacyLink.name];
-    _termsLink = config[ConfigKey.termsLink.name];
+      _featureData = config[ConfigKey.featureData.name];
+      _featureDisabled = config[ConfigKey.featureDisabled.name];
+    } catch (e, s) {
+      _featureDisabled = true;
+      _featureData = '';
+    }
     return this;
   }
 
-  void closeClient() => _flagsmithClient.close();
+  void closeClient() async {
+    _flagsmithClient.close();
+  }
 
-  bool get usePrivacy => _usePrivacy;
+  bool get featureDisabled => _featureDisabled;
 
-  String get link => _link;
-
-  String get privacyLink => _privacyLink;
-
-  String get termsLink => _termsLink;
-
+  String get featureData => _featureData;
 }
 
 enum ConfigKey {
-  config,
-  link,
-  usePrivacy,
-  privacyLink,
-  termsLink,
+  feature,
+  featureData,
+  featureDisabled,
 }
