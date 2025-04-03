@@ -7,8 +7,9 @@ class AppPreferences {
 
   late SharedPreferences prefs;
 
-  Future<void> init() async {
+  Future<AppPreferences> init() async {
     prefs = await SharedPreferences.getInstance();
+    return this;
   }
 
   String get lastUrl => prefs.getString('lastUrl') ?? '';
